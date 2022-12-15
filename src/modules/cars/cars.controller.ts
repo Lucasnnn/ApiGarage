@@ -1,34 +1,78 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Res,
+} from '@nestjs/common';
 import { CarsService } from './cars.service';
 import { CreateCarDto } from './dto/create-car.dto';
 import { UpdateCarDto } from './dto/update-car.dto';
+import { Car } from './entities/car.entity';
 
 @Controller('cars')
 export class CarsController {
   constructor(private readonly carsService: CarsService) {}
 
   @Post()
-  create(@Body() createCarDto: CreateCarDto) {
-    return this.carsService.create(createCarDto);
+  async createCar(
+    @Body()
+    { brand, model, year, horse, traction, modified, sold }: CreateCarDto,
+    @Res() response: Response,
+  ) {
+    try {
+      const result = await this.carsService.create({
+        brand,
+        model,
+        year,
+        horse,
+        traction,
+        modified,
+        sold,
+      });
+
+      return result;
+    } catch (error) {
+      throw new Error('Error in create');
+    }
   }
 
   @Get()
-  findAll() {
-    return this.carsService.findAll();
+  async getAll(): Promise<Car[]> {
+    return this.carsService.getAll();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.carsService.findOne(+id);
+  async getId(@Param('id') id: string): Promise<Car> {
+    try {
+      return await this.carsService.getId(id);
+    } catch (error) {
+      throw new Error('id not found');
+    }
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateCarDto: UpdateCarDto) {
-    return this.carsService.update(+id, updateCarDto);
+  async updateCar(
+    @Param('id') id: string,
+    @Body() UpdateCarDto: UpdateCarDto,
+  ): Promise<UpdateCarDto> {
+    try {
+      return await this.carsService.update(id, UpdateCarDto);
+    } catch (error) {
+      throw new Error('Error in create');
+    }
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.carsService.remove(+id);
+  async DeleteGameById(@Param('id') id: string): Promise<string> {
+    const gameIsDeleted = await this.carsService.delete(id);
+    if (gameIsDeleted) {
+      return 'car deleted success';
+    } else {
+      return 'car not found';
+    }
   }
 }

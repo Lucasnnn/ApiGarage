@@ -10,8 +10,9 @@ async function bootstrap() {
 
   const config = new DocumentBuilder()
     .setTitle('API')
-    .setDescription('The super API description')
+    .setDescription('Api da garagem do lukinha')
     .setVersion('1.0')
+    .addBearerAuth()
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
@@ -19,6 +20,6 @@ async function bootstrap() {
   SwaggerModule.setup('api/docs', app, document);
 
   await app.listen(3000);
-  console.log(`Application is running on: ${await app.getUrl()}`);
+  console.log(`Rodando na porta ${await app.getUrl()}`);
 }
 bootstrap();

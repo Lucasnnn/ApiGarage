@@ -42,17 +42,25 @@ export class UsersService {
     return foundUser;
   }
 
+  async getUserByEmail(email: string): Promise<IUser> {
+    const user = await this.prisma.user.findUniqueOrThrow({
+      where: { email: email },
+    });
+
+    return user;
+  }
+
   async deleteUserById(userId: string): Promise<boolean> {
-    try {
-      await this.prisma.user.delete({
-        where: { id: userId },
-      });
+    const x = this.prisma.user.findUnique({ where: { id: userId } });
 
-      return true;
-    } catch (err) {
-      console.log(err);
-
-      return false;
+    if (!x) {
+      throw new Error('Invalid password');
     }
+    
+    await this.prisma.user.delete({
+      where: { id: userId },
+    });
+
+    return true;
   }
 }
