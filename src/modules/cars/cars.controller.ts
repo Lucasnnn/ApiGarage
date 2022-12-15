@@ -8,11 +8,13 @@ import {
   Delete,
   Res,
 } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { CarsService } from './cars.service';
 import { CreateCarDto } from './dto/create-car.dto';
 import { UpdateCarDto } from './dto/update-car.dto';
 import { Car } from './entities/car.entity';
 
+@ApiTags('Cars')
 @Controller('cars')
 export class CarsController {
   constructor(private readonly carsService: CarsService) {}
